@@ -63,16 +63,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const tabId = this.dataset.tab;
             if (contents[tabId]) {
                 contents[tabId].style.display = 'flex';
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        syncCarouselHeight();
-                    });
-                });
+                // Убираем вызов syncCarouselHeight — он не нужен
             }
         });
     });
 });
 
+// Анимации GSAP
 document.addEventListener('DOMContentLoaded', function () {
     gsap.registerPlugin(ScrollTrigger);
     gsap.utils.toArray('.animate-on-scroll').forEach(section => {
@@ -173,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Карусель кейсов (свайп/скролл)
 document.addEventListener('DOMContentLoaded', function () {
     const wrapper = document.getElementById('casesWrapper');
     const carousel = document.getElementById('casesCarousel');
@@ -308,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, { passive: true });
 });
 
+// Калькулятор
 document.addEventListener('DOMContentLoaded', function () {
     const budgetInput = document.getElementById('budgetInput');
     const resultsGrid = document.getElementById('resultsGrid');
@@ -426,6 +425,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// FAQ
 document.addEventListener('DOMContentLoaded', function () {
     const faqList = document.getElementById('faqList');
     if (!faqList) return;
@@ -474,6 +474,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Вертикальная карусель для интерактивных механик
 document.addEventListener('DOMContentLoaded', function () {
     const track = document.getElementById('carouselTrack');
     const dots = document.querySelectorAll('.carousel-dot');
@@ -523,35 +524,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 goToSlide(Math.max(currentIndex - 1, 0));
             }
         }, { passive: false });
-    }
-});
-
-function syncCarouselHeight() {
-    const wrapper = document.querySelector('.solutions__carousel-wrapper');
-    const cards = document.querySelector('.solutions__cards');
-    if (!wrapper || !cards) return;
-    const parent = wrapper.closest('.solutions__content');
-    if (!parent || parent.style.display === 'none') return;
-    const height = cards.offsetHeight;
-    if (height > 0 && window.innerWidth > 1200) {
-        wrapper.style.height = height + 'px';
-    } else {
-        wrapper.style.height = '';
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    requestAnimationFrame(() => {
-        requestAnimationFrame(syncCarouselHeight);
-    });
-    let resizeTimer;
-    window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(syncCarouselHeight, 100);
-    });
-    const cards = document.querySelector('.solutions__cards');
-    if (cards && window.ResizeObserver) {
-        const observer = new ResizeObserver(() => syncCarouselHeight());
-        observer.observe(cards);
     }
 });
