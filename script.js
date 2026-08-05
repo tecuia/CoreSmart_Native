@@ -405,7 +405,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateCalculator() {
-        const budget = budgetInput.value;
+        let budget = budgetInput.value.trim();
+        if (budget === '') {
+            budget = '1 000 000';
+        }
         const metrics = getMetricsByBudget(budget);
         renderMetrics(metrics);
     }
@@ -432,13 +435,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const faqData = Array.from({ length: 5 }, () => ({
         question: 'Сколько публикаций нужно подготовить для старта?',
-        answer: 'Рекомендуем начать с 3-5 креативов и постепенно увеличивать количество. Успешные рекламодатели единовременно размещают в среднем 15-20 креативов.'
+        answer: 'Рекомендуем начать с 3-5 креативов и постепенно увеличивать количество. Успешные рекламодатели единовременно размещают в <br> среднем 15-20 креативов.'
     }));
 
     faqData.forEach((item, index) => {
         const faqItem = document.createElement('div');
         faqItem.className = 'faq-item';
-        if (index === 0) faqItem.classList.add('faq-item--open');
 
         const header = document.createElement('div');
         header.className = 'faq-item__header';
@@ -459,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
         body.className = 'faq-item__body';
         const answer = document.createElement('p');
         answer.className = 'faq-item__answer';
-        answer.textContent = item.answer;
+        answer.innerHTML = item.answer;
         body.appendChild(answer);
         faqItem.appendChild(body);
         faqList.appendChild(faqItem);
@@ -525,4 +527,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }, { passive: false });
     }
+});
+
+const caseItems = document.querySelectorAll('.case-item');
+caseItems.forEach(item => {
+  item.addEventListener('mouseenter', function() {
+    caseItems.forEach(el => el.classList.remove('active'));
+    this.classList.add('active');
+  });
 });
