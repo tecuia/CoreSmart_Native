@@ -628,6 +628,7 @@ body {
   object-fit: cover;  
   display: block;
   flex-shrink: 0;
+  margin-top: 7%;
 }
 
 .solutions__cards {
@@ -889,7 +890,8 @@ body {
 }
 
 .cases__carousel-wrapper {
-  overflow: visible;
+  overflow-x: auto;
+  overflow-y: visible;
   cursor: grab;
   padding-bottom: clamp(10px, 1.5vw, 20px);
   margin-right: clamp(-16px, -5vw, -100px);
@@ -1520,6 +1522,30 @@ body {
 .footer__contact-item--email {
   margin-top: auto; 
 }
+
+/* Общие стили для точек */
+.cases__dots {
+  display: none; 
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-right: 32px; 
+}
+
+.cases__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(37, 37, 37, 0.6);
+  cursor: pointer;
+  transition: background 0.3s;
+  border: none;
+  padding: 0;
+}
+
+.cases__dot.active {
+  background: #DF002C;
+}
 /* ============================================================
    МОБИЛЬНАЯ АДАПТАЦИЯ (ширина до 768px)
    ============================================================ */
@@ -1627,10 +1653,13 @@ body {
     padding-bottom: 20px;
   }
   .about-native__container {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: 8px;
   }
+  .about-native__desc br {
+    display: none;
+  } 
   .about-native__line {
     height: 26px;
   }
@@ -1693,7 +1722,7 @@ body {
   }
   .features__container {
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
   }
   .features__content {
     gap: 20px;
@@ -1709,6 +1738,7 @@ body {
   }
   .features__image img {
     border-radius: 12px;
+    margin-top: -70px;
   }
 
   /* ---- Как работаем ---- */
@@ -1761,11 +1791,23 @@ body {
     margin-bottom: 20px;
   }
   .solutions__tabs {
-    gap: 16px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
   .solutions__tab {
     font-size: 16px;
+  }
+  .solutions__goal {
+  font-size: 16px;  
+  font-weight: 500;
+  margin-bottom: 4px;
+  }
+
+  .solutions__goal-desc {
+    font-size: 14px;   
+    font-weight: 400;
+    line-height: 110%;
   }
   .solutions__content {
     flex-direction: column;
@@ -1792,6 +1834,7 @@ body {
     padding: 20px;
     border-radius: 20px;
     justify-content: center;
+    gap: 12px;
   }
   .solution-card__number {
     font-size: 16px;
@@ -1899,54 +1942,78 @@ body {
   transform: scale(1.25);
 }
 
-  /* ---- Кейсы ---- */
-  .cases {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-  .cases__header {
-    gap: 8px;
-    margin-bottom: 20px;
-    padding-right: 0;
-  }
-  .cases__line {
-    height: 26px;
-  }
-  .cases__title {
-    font-size: 24px;
-  }
-  .cases__controls {
-    display: none;
-  }
-  .cases__carousel-wrapper {
-    margin-right: 0;
-  }
-  .cases__carousel {
-    gap: 14px;
-    padding-right: 32px;
-  }
-  .case-item,
-  .case-item:hover {
-    flex: 0 0 155px;
-    width: 155px;
-    height: 346px;
-    border-radius: 12px;
-    padding: 20px 10px 0;
-  }
-  .case-item__name {
-    font-size: 20px;
-  }
-  .case-item__img {
-    width: 100%;
-    height: auto;
-    max-height: 80%;
-    bottom: -5%;
-  }
+/* ---- Кейсы ---- */
+.cases {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.cases__header {
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-right: 0;
+}
+.cases__line {
+  height: 26px;
+}
+.cases__title {
+  font-size: 24px;
+}
+.cases__controls {
+  display: none;
+}
+.cases__carousel-wrapper {
+  margin-right: 0;
+}
+.cases__carousel {
+  gap: 14px;
+  padding-right: 32px;
+}
+.case-item,
+.case-item:hover {
+  flex: 0 0 130px;   
+  width: 130px;
+  height: 280px;     
+  border-radius: 12px;
+  padding: 20px 10px 0;
+}
+.case-item__name {
+  font-size: 20px;
+}
+.case-item__img {
+  width: 100%;
+  height: auto;
+  max-height: 80%;
+  bottom: -5%;
+}
+
+/* Точки */
+.cases__dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-right: 32px;
+}
+.cases__dot {
+  width: 4px;         
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(37, 37, 37, 0.6);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: all 0.3s;
+}
+.cases__dot.active {
+  width: 12px;       
+  height: 12px;
+  background: #DF002C;
+}
 
   /* ---- Калькулятор ---- */
   .calculator {
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
   }
   .calculator__header {
     gap: 8px;
@@ -2127,10 +2194,6 @@ body {
     max-width: 100%;
   }
 
-  /* ---- Скрываем сетку точек на мобильных ---- */
-  body {
-    background-image: none;
-  }
   #dots-overlay {
     display: none;
   }

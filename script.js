@@ -536,3 +536,86 @@ caseItems.forEach(item => {
     this.classList.add('active');
   });
 });
+
+// В конце файла script.js после инициализации карусели кейсов добавим:
+
+// Генерация точек для кейсов
+function initCasesDots() {
+  const dotsContainer = document.getElementById('casesDots');
+  const items = document.querySelectorAll('.case-item');
+  if (!dotsContainer || items.length === 0) return;
+
+  // Очищаем и создаём точки
+  dotsContainer.innerHTML = '';
+  items.forEach((item, index) => {
+    const dot = document.createElement('button');
+    dot.className = 'cases__dot' + (index === 0 ? ' active' : '');
+    dot.dataset.index = index;
+    dot.setAttribute('aria-label', `Перейти к кейсу ${index + 1}`);
+    dot.addEventListener('click', function() {
+      const wrapper = document.getElementById('casesWrapper');
+      if (!wrapper) return;
+      const itemWidth = items[0].offsetWidth + 14; // ширина + gap
+      const targetScroll = index * itemWidth;
+      gsap.to(wrapper, {
+        scrollLeft: targetScroll,
+        duration: 0.6,
+        ease: 'power2.inOut'
+      });
+    });
+    dotsContainer.appendChild(dot);
+  });
+
+  // Функция обновления активной точки
+  function updateDots() {
+    const wrapper = document.getElementById('casesWrapper');
+    if (!wrapper) return;
+    const scrollLeft = wrapper.scrollLeft;
+    const itemWidth = items[0].offsetWidth + 14;
+    const currentIndex = Math.round(scrollLeft / itemWidth);
+    const dots = dotsContainer.querySelectorAll('.cases__dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+    });
+  }
+
+  // Обновляем точки при прокрутке (событие scroll)
+  const wrapper = document.getElementById('casesWrapper');
+  if (wrapper) {
+    wrapper.addEventListener('scroll', updateDots);
+    // Также обновляем после программного скролла (клик по точке)
+    // можно вызвать updateDots по окончании анимации
+    const originalGoto = window.gotoCase;
+    window.gotoCase = function(index) {
+      const itemWidth = items[0].offsetWidth + 14;
+      const targetScroll = index * itemWidth;
+      gsap.to(wrapper, {
+        scrollLeft: targetScroll,
+        duration: 0.6,
+        ease: 'power2.inOut',
+        onComplete: updateDots
+      });
+    };
+    // При клике на кнопки тоже обновляем
+    const prevBtn = document.querySelector('.cases__btn--prev');
+    const nextBtn = document.querySelector('.cases__btn--next');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function() {
+        setTimeout(updateDots, 100);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function() {
+        setTimeout(updateDots, 100);
+      });
+    }
+    // Первоначальное обновление
+    setTimeout(updateDots, 200);
+  }
+}
+
+// Запускаем после загрузки DOM
+document.addEventListener('DOMContentLoaded', function() {
+  // ... существующий код ...
+  initCasesDots();
+});
