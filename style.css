@@ -1712,7 +1712,7 @@ body {
   }
   .features__header {
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
   .features__line {
     height: 52px;
@@ -1722,7 +1722,7 @@ body {
   }
   .features__container {
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
   }
   .features__content {
     gap: 20px;
@@ -1738,7 +1738,7 @@ body {
   }
   .features__image img {
     border-radius: 12px;
-    margin-top: -70px;
+    margin-top: -120px;
   }
 
   /* ---- Как работаем ---- */
@@ -1748,7 +1748,7 @@ body {
   }
   .work-process__header {
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
   .work-process__line {
     height: 26px;
@@ -1836,6 +1836,28 @@ body {
     justify-content: center;
     gap: 12px;
   }
+  .solutions__header {
+    gap: 8px;
+    margin-bottom: 40px;
+  }
+
+  .solutions__line { 
+    width: 2px;
+    height: 52px;
+    background: #DF002C;
+    flex-shrink: 0;
+  }
+
+  .solutions__title-break {
+    display: block; 
+  }
+
+  .solutions__title {
+    font-size: 24px;
+    margin: 0;
+  }
+
+
   .solution-card__number {
     font-size: 16px;
   }
@@ -1843,55 +1865,94 @@ body {
     font-size: 14px;
   }
 
-/* ---- Карусель интерактивных механик (мобильная) ---- */
+#tab-interactive {
+  flex-direction: column-reverse;
+}
+
 .solutions__carousel-wrapper {
-  flex: 0 0 100% !important;
-  max-width: 100% !important;
-  height: 344px !important;
+  flex: 0 0 100%;
+  max-width: 100%;
+  height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   border-radius: 12px;
-  overflow: hidden !important;
-  position: relative;
   background: #ffffff;
-  margin-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 16px;
+  position: relative;
+}
+.solutions__carousel-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .solutions__carousel {
-  height: 100%;
-  overflow: hidden !important;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: auto;
+  position: relative;
 }
 
 .carousel-track {
-  height: 100% !important;
   display: flex;
-  flex-direction: column;
-  flex: 0 0 100% !important; 
-  transition: transform 0.6s ease;
-  will-change: transform;
-  overflow: hidden;
-  min-height: 0;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  transform: none !important;
+  transition: none !important;
 }
 
 .carousel-slide {
-  flex: 0 0 100% !important;
-  height: 100% !important;
-  min-height: 0;
+  flex: 0 0 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 344px;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  box-sizing: border-box;
+  opacity: 1 !important;
+  transition: none !important;
   background: #ffffff;
+  box-sizing: border-box;
 }
 
-.carousel-slide.active {
-  opacity: 1;
+.carousel-dots {
+  position: static !important;
+  transform: none !important;
+  right: auto !important;
+  top: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin-top: 16px !important;
+  padding: 0 20px 16px !important;
+  background: transparent !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
+.carousel-dot {
+  width: 4px !important;
+  height: 4px !important;
+  transform: none !important;
+  background: rgba(37, 37, 37, 0.6) !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  border: none !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  transition: all 0.3s ease !important;
+  margin: 0 !important;
+}
+
+.carousel-dot.active {
+  width: 12px !important;
+  height: 12px !important;
+  background: #DF002C !important;
+  transform: none !important;
+}
 .slide-badge {
   font-size: 14px;
   padding: 6px 16px 8px;
@@ -1995,18 +2056,22 @@ body {
   padding-right: 32px;
 }
 .cases__dot {
-  width: 4px;         
+  width: 4px;
   height: 4px;
-  border-radius: 50%;
+  transform: translateY(4px); 
   background: rgba(37, 37, 37, 0.6);
+  border-radius: 50%;
   cursor: pointer;
   border: none;
   padding: 0;
-  transition: all 0.3s;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
 }
+
 .cases__dot.active {
-  width: 12px;       
+  width: 12px;
   height: 12px;
+  transform: translateY(0);
   background: #DF002C;
 }
 
@@ -2047,7 +2112,7 @@ body {
     min-height: 474px;
   }
   .calculator-card__title {
-    font-size: 16px;
+    font-size: 20px;
   }
   .calculator-card__subtitle {
     font-size: 14px;
