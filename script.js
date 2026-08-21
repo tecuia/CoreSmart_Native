@@ -487,27 +487,25 @@ function initInteractiveCarousel() {
     function goToSlide(index) {
         if (isAnimating || index === currentIndex) return;
         if (index < 0 || index >= slides.length) return;
+        isAnimating = true;
 
-        if (window.innerWidth <= 768 && wrapper) {
-            const slideWidth = slides[0].getBoundingClientRect().width;
-            wrapper.scrollLeft = index * slideWidth;
-            dots.forEach(d => d.classList.remove('active'));
-            dots[index].classList.add('active');
-            currentIndex = index;
-            return;
+        const isMobile = window.innerWidth <= 768;
+        const offset = -index * 100;
+
+        if (isMobile) {
+            track.style.transform = `translateX(${offset}%)`;
+        } else {
+            track.style.transform = `translateY(${offset}%)`;
         }
 
-        isAnimating = true;
         slides.forEach(s => s.classList.remove('active'));
         slides[index].classList.add('active');
-        const offset = -index * 100;
-        track.style.transform = `translateY(${offset}%)`;
+
         dots.forEach(d => d.classList.remove('active'));
         dots[index].classList.add('active');
+
         currentIndex = index;
-        setTimeout(() => {
-            isAnimating = false;
-        }, 600);
+        setTimeout(() => { isAnimating = false; }, 600);
     }
 
     dots.forEach((dot, idx) => {
@@ -516,34 +514,43 @@ function initInteractiveCarousel() {
         });
     });
 
-    // Инициализация первого слайда
     slides.forEach((s, i) => {
         if (i === 0) s.classList.add('active');
         else s.classList.remove('active');
     });
-    if (window.innerWidth > 768) {
-        track.style.transform = 'translateY(0%)';
-    }
-    dots[0].classList.add('active');
+    track.style.transform = window.innerWidth <= 768 ? 'translateX(0%)' : 'translateY(0%)';
+    dots[0] && dots[0].classList.add('active');
 
-    // Обработка скролла на мобильных
-    if (wrapper) {
-        wrapper.addEventListener('scroll', function () {
-            if (window.innerWidth <= 768) {
-                const slideWidth = slides[0].getBoundingClientRect().width;
-                const scrollLeft = wrapper.scrollLeft;
-                const newIndex = Math.round(scrollLeft / slideWidth);
-                if (newIndex !== currentIndex && newIndex >= 0 && newIndex < slides.length) {
-                    dots.forEach(d => d.classList.remove('active'));
-                    dots[newIndex].classList.add('active');
-                    currentIndex = newIndex;
+    let startX = 0;
+    let isDragging = false;
+
+    if (window.innerWidth <= 768 && wrapper) {
+        wrapper.addEventListener('touchstart', function(e) {
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            isDragging = true;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', function(e) {
+            if (isDragging) e.preventDefault();
+        }, { passive: false });
+
+        wrapper.addEventListener('touchend', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const endX = e.changedTouches[0].clientX;
+            const diff = endX - startX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) {
+                    goToSlide(Math.min(currentIndex + 1, slides.length - 1));
+                } else {
+                    goToSlide(Math.max(currentIndex - 1, 0));
                 }
             }
-        });
+        }, { passive: true });
     }
 
-    // Обработка колесика мыши на десктопе
-    if (wrapper && window.innerWidth > 768) {
+    if (window.innerWidth > 768 && wrapper) {
         wrapper.addEventListener('wheel', function (e) {
             e.preventDefault();
             const delta = e.deltaY;
