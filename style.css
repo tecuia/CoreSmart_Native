@@ -612,54 +612,42 @@ body {
   height: clamp(400px, 87vh, 824px);
 }
 
-/* ----- СТАТИЧНАЯ КАРТОЧКА ДЛЯ НАТИВНЫХ СТАТЕЙ ----- */
 .native-single-card {
-  flex: 1 1 calc(50% - 20px);
-  max-width: calc(50% - 20px);
-  min-width: 300px;
-  height: clamp(400px, 87vh, 824px);
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 40px 40px 40px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.native-single-card__badge {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 6px 16px 8px;
-  height: 40px;
-  background: #DF002C;
-  border-radius: 12px;
-  font-family: 'Noto Sans', sans-serif;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 110%;
-  color: #F2F2F2;
-  white-space: nowrap;
-  flex: none;
-  margin-bottom: 8px;
-  align-self: flex-start;
-}
-
-.native-single-card__image {
-  width: 100%;
+  position: relative;
+  width: min(850px, 85%);         
   max-width: 100%;
-  margin: 0 auto 0 0;
-  border-radius: 16px;
+  height: clamp(500px, 75vh, 824px);
+  padding: 0;
+  background: #FFFFFF;
+  border-radius: 20px;
   overflow: hidden;
-  background: #f0f0f0;
-  flex: 1 1 auto;
-  align-self: center;
-  min-height: 120px;
-  max-height: 220px;
+  flex: 0 0 auto;
+  margin: 0 auto;
+}
+
+.native-main-img {
+  position: absolute;
+  width: clamp(400px, 70%, 950px);   
+  height: auto;
+  left: -10%;                        
+  top: 15%;                          
+  border: clamp(6px, 1vw, 12px) solid #000000;
+  border-radius: clamp(20px, 4vw, 40px);
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.32));
+  max-width: none;
+  object-fit: contain;
+}
+
+.native-overlay-img {
+  position: absolute;
+  width: clamp(80px, 20%, 260px);    
+  height: auto;
+  left: auto;                       
+  right: 5%;                         
+  top: 55%;                         
+  transform: translateY(-60%);     
+  max-width: none;
+  object-fit: contain;
 }
 .native-single-card__image img {
   display: block;
@@ -669,7 +657,6 @@ body {
   max-height: 220px;
 }
 
-/* ----- ЧЁРНЫЕ КАРТОЧКИ (solutions__cards) ----- */
 .solutions__cards {
   height: 100%;
   display: flex;
@@ -2066,8 +2053,9 @@ body {
   flex: 0 0 100%;
   max-width: 100%;
   height: auto;
-  min-height: 311px;
+  min-height: 301px;
   padding: 16px;
+  padding-top: 55px;
   opacity: 1 !important;
   background: #ffffff;
   box-sizing: border-box;
@@ -2077,26 +2065,6 @@ body {
   gap: 0px;
 }
 
-  .carousel-slide .slide-badge {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 159px;
-    height: 29px;
-    padding: 6px 16px 8px;
-    background: #DF002C;
-    border-radius: 8px;
-    font-size: 14px;
-    line-height: 110%;
-    color: #F2F2F2;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 0 12px 0;          
-    z-index: auto;              
-    flex-shrink: 0;
-  }
 
 .slide-image {
   width: 100%;
@@ -2433,7 +2401,7 @@ body {
     position: relative;
     width: 326px;
     max-width: 100%;
-    height: 344px;
+    height: 350px;
     margin: 0 auto;
     padding: 0;
     background: #FFFFFF;
@@ -2493,7 +2461,7 @@ body {
     width: 99px !important;
     height: auto !important;
     left: 207px !important;
-    top: calc(50% - 38px/2 + 36px) !important;
+    top: calc(140% - 38px/2 + 36px) !important;
     object-fit: contain !important;
     max-height: none !important;
     max-width: none !important;
@@ -2527,3 +2495,4 @@ body {
     font-size: 16px;
   }
 }
+
