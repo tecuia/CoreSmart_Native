@@ -2496,3 +2496,124 @@ body {
   }
 }
 
+@media (min-width: 1921px) {
+  .promo__banners-row .banner {
+    max-width: none;
+    flex: 1 1 0;
+  }
+  .promo__banner-full .banner {
+    max-width: 100%;
+  }
+  .banner {
+    height: clamp(304px, 20vh, 400px);
+    min-height: 304px;
+  }
+
+  .advantages__image {
+    flex: 1 1 400px;
+    max-width: 35%;
+  }
+  .advantages__image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .features__image {
+    flex: 1 1 400px;
+    max-width: 35%;
+  }
+  .features__image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .solutions__content {
+    flex-wrap: nowrap;
+    align-items: stretch;
+    height: 824px; 
+  }
+  .solutions__content > * {
+    flex: 1 1 0;
+    max-width: none;
+    min-width: 0;
+    height: 100%;
+  }
+
+  #tab-native .native-single-card {
+    flex: 0 0 850px;
+    max-width: 850px;
+    height: 100%;
+    margin: 0;
+  }
+  #tab-native .solutions__cards {
+    flex: 1 1 0;
+    max-width: none;
+    margin-left: 20px;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  #tab-interactive .solutions__carousel-wrapper {
+    flex: 0 0 850px;
+    max-width: 850px;
+    height: 100%;
+    margin: 0;
+  }
+  #tab-interactive .solutions__cards {
+    flex: 1 1 0;
+    max-width: none;
+    margin-left: 20px;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .solution-card {
+    width: 100%;
+    max-width: none;
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    padding: 30px 40px;
+  }
+
+  .carousel-slide {
+    height: 100%;
+    padding: 30px;
+  }
+
+  .cases__carousel-wrapper {
+    justify-content: center;
+    margin-right: 0;
+  }
+  .cases__carousel {
+    justify-content: center;
+    gap: 20px;
+  }
+  .case-item {
+    flex: 0 0 450px;
+    width: 450px;
+    height: 820px;
+  }
+  .case-item.active {
+    flex: 0 0 800px;
+    width: 800px;
+  }
+
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .footer__container {
+    max-width: 100%;
+    padding: 0 120px;
+    gap: 60px;
+  }
+  .footer__right {
+    gap: 120px;
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .footer__left {
+    flex: 0 0 auto;
+  }
+}
