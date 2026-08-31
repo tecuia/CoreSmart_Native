@@ -49,24 +49,54 @@ document.addEventListener('DOMContentLoaded', function () {
         native: document.getElementById('tab-native'),
         interactive: document.getElementById('tab-interactive')
     };
+    let currentTab = 'native';
+
+    gsap.set(contents.native, { opacity: 1 });
+    gsap.set(contents.interactive, { opacity: 0 });
+    contents.interactive.style.display = 'none';
+
     tabs.forEach(tab => {
         tab.addEventListener('click', function () {
+            const tabId = this.dataset.tab;
+            if (tabId === currentTab) return;
+
+            const oldContent = contents[currentTab];
+            const newContent = contents[tabId];
+
+            gsap.to(oldContent, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.out',
+                onComplete: () => {
+                    oldContent.style.display = 'none';
+                }
+            });
+
+            newContent.style.display = 'flex';
+            void newContent.offsetHeight;
+            gsap.set(newContent, { opacity: 0 });
+
+
+            if (tabId === 'interactive') {
+                initInteractiveCarousel();
+            }
+
+            requestAnimationFrame(() => {
+                gsap.to(newContent, {
+                    opacity: 1,
+                    duration: 0.4,
+                    ease: 'power2.out'
+                });
+            });
+
             tabs.forEach(t => {
                 t.classList.remove('solutions__tab--active');
                 t.classList.add('solutions__tab--inactive');
             });
             this.classList.add('solutions__tab--active');
             this.classList.remove('solutions__tab--inactive');
-            Object.values(contents).forEach(content => {
-                content.style.display = 'none';
-            });
-            const tabId = this.dataset.tab;
-            if (contents[tabId]) {
-                contents[tabId].style.display = 'flex';
-                if (tabId === 'interactive') {
-                    setTimeout(initInteractiveCarousel, 50);
-                }
-            }
+
+            currentTab = tabId;
         });
     });
 });
@@ -154,6 +184,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 toggleActions: 'play none none none'
             }
         });
+    });
+    // Анимация пунктов "Как мы работаем" с появлением по очереди
+    gsap.from('.work-item', {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power2.out',
+        scrollTrigger: {
+            trigger: '.work-process',
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+        }
     });
     gsap.utils.toArray('.case-item').forEach((item, i) => {
         gsap.from(item, {
@@ -414,6 +457,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     budgetInput.addEventListener('input', function (e) {
         let raw = this.value.replace(/\s/g, '').replace(/[^0-9]/g, '');
+        
+        // Ограничение максимального числа 9 999 999
+        let num = parseInt(raw, 10);
+        if (!isNaN(num) && num > 9999999) {
+            num = 9999999;
+            raw = String(num);
+        }
+        
         if (raw === '') raw = '0';
         let formatted = Number(raw).toLocaleString('ru-RU');
         this.value = formatted;
@@ -466,9 +517,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         header.addEventListener('click', function () {
             const isOpen = faqItem.classList.contains('faq-item--open');
-            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('faq-item--open'));
-            if (!isOpen) {
+            if (isOpen) {
+                faqItem.classList.remove('faq-item--open');
+                body.style.maxHeight = '0';
+            } else {
                 faqItem.classList.add('faq-item--open');
+                body.style.maxHeight = '0';
+                requestAnimationFrame(() => {
+                    const height = body.scrollHeight;
+                    body.style.maxHeight = height + 'px';
+                });
             }
         });
     });

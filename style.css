@@ -207,8 +207,8 @@ body {
   max-width: 1720px;
 }
 .banner {
-  min-height: clamp(160px, 20vh, 304px);
-  height: 304px;
+  min-height: clamp(140px, 18vh, 280px);
+  height: 280px;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -1393,7 +1393,6 @@ body {
   padding: 0 0 0 0;
 }
 .faq-item--open .faq-item__body {
-  max-height: 300px;
   padding: clamp(8px, 1vw, 20px) 0 clamp(4px, 0.5vw, 10px) 0;
 }
 .faq-item__answer {
@@ -1591,33 +1590,54 @@ body {
   padding: 0;
 }
 
-  .native-main-img {
-    position: absolute !important;
-    width: 950px !important;
-    height: auto !important;
-    left: -195px !important;
-    top: 130px !important;
-    border: 12px solid #000000 !important;
-    border-radius: 40px !important;
-    filter: drop-shadow(4px 4px 16px rgba(0, 0, 0, 0.32)) !important;
-    object-fit: contain !important;
-    max-height: none !important;
-    max-width: none !important;
-    z-index: 1 !important;
-  }
+.native-main-img {
+  position: absolute !important;
+  width: 950px !important;
+  height: auto !important;
+  left: -195px !important;
+  top: 130px !important;
+  border: 12px solid #000000 !important;
+  border-radius: 40px !important;
+  filter: drop-shadow(4px 4px 16px rgba(0, 0, 0, 0.32)) !important;
+  object-fit: contain !important;
+  max-height: none !important;
+  max-width: none !important;
+  z-index: 1 !important;
+}
 
-  .native-overlay-img {
-    position: absolute !important;
-    width: 260px !important;
-    height: auto !important;
-    left: 560px !important;
-    top: calc(60% + 60px) !important;
-    object-fit: contain !important;
-    max-height: none !important;
-    max-width: none !important;
-    z-index: 5 !important;
-  }
+.native-overlay-img {
+  position: absolute !important;
+  width: 260px !important;
+  height: auto !important;
+  left: 560px !important;
+  top: calc(60% + 60px) !important;
+  object-fit: contain !important;
+  max-height: none !important;
+  max-width: none !important;
+  z-index: 5 !important;
+}
 
+/* Запрет выделения на всех интерактивных элементах */
+button,
+[role="button"],
+.nav-link,
+.solutions__tab,
+.cases__btn,
+.cases__dot,
+.carousel-dot,
+.category-chip,
+.request__btn,
+.promo__button,
+.work-process__button,
+.calculator__download-btn,
+.contact-btn,
+.faq-item__toggle,
+.case-item {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
   @media (min-width: 769px) {
   .native-single-card {
     position: relative;
@@ -2486,10 +2506,10 @@ body {
     height: 280px;
   }
   .case-item__img {
-    width: 100%;
+    width: 140%;
     height: auto;
     max-height: 75%;
-    bottom: -5%;
+    bottom: 0%;
   }
   .case-item__name {
     font-size: 16px;
