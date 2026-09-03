@@ -44,64 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const tabs = document.querySelectorAll('.solutions__tab');
-    const contents = {
-        native: document.getElementById('tab-native'),
-        interactive: document.getElementById('tab-interactive')
-    };
-    let currentTab = 'native';
-
-    gsap.set(contents.native, { opacity: 1 });
-    gsap.set(contents.interactive, { opacity: 0 });
-    contents.interactive.style.display = 'none';
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            const tabId = this.dataset.tab;
-            if (tabId === currentTab) return;
-
-            const oldContent = contents[currentTab];
-            const newContent = contents[tabId];
-
-            gsap.to(oldContent, {
-                opacity: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-                onComplete: () => {
-                    oldContent.style.display = 'none';
-                }
-            });
-
-            newContent.style.display = 'flex';
-            void newContent.offsetHeight;
-            gsap.set(newContent, { opacity: 0 });
-
-
-            if (tabId === 'interactive') {
-                initInteractiveCarousel();
-            }
-
-            requestAnimationFrame(() => {
-                gsap.to(newContent, {
-                    opacity: 1,
-                    duration: 0.4,
-                    ease: 'power2.out'
-                });
-            });
-
-            tabs.forEach(t => {
-                t.classList.remove('solutions__tab--active');
-                t.classList.add('solutions__tab--inactive');
-            });
-            this.classList.add('solutions__tab--active');
-            this.classList.remove('solutions__tab--inactive');
-
-            currentTab = tabId;
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
     gsap.registerPlugin(ScrollTrigger);
     gsap.utils.toArray('.animate-on-scroll').forEach(section => {
         gsap.from(section, {
@@ -140,33 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
             scrollTrigger: {
                 trigger: item,
                 start: 'top 90%',
-                toggleActions: 'play none none none'
-            }
-        });
-    });
-    gsap.utils.toArray('.solution-card').forEach((card, i) => {
-        gsap.from(card, {
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            delay: i * 0.1,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 90%',
-                toggleActions: 'play none none none'
-            }
-        });
-    });
-    gsap.utils.toArray('.solutions__image img').forEach(img => {
-        gsap.from(img, {
-            opacity: 0,
-            scale: 0.95,
-            duration: 1,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: img,
-                start: 'top 85%',
                 toggleActions: 'play none none none'
             }
         });
@@ -457,14 +372,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     budgetInput.addEventListener('input', function (e) {
         let raw = this.value.replace(/\s/g, '').replace(/[^0-9]/g, '');
-        
-        // Ограничение максимального числа 9 999 999
         let num = parseInt(raw, 10);
         if (!isNaN(num) && num > 9999999) {
             num = 9999999;
             raw = String(num);
         }
-        
         if (raw === '') raw = '0';
         let formatted = Number(raw).toLocaleString('ru-RU');
         this.value = formatted;
@@ -530,98 +442,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-});
-
-function initInteractiveCarousel() {
-    const track = document.getElementById('carouselTrack');
-    const dots = document.querySelectorAll('.carousel-dot');
-    const slides = document.querySelectorAll('.carousel-slide');
-    const wrapper = document.querySelector('.solutions__carousel-wrapper');
-    let currentIndex = 0;
-    let isAnimating = false;
-
-    if (!track || slides.length === 0) return;
-
-    function goToSlide(index) {
-        if (isAnimating || index === currentIndex) return;
-        if (index < 0 || index >= slides.length) return;
-        isAnimating = true;
-
-        const isMobile = window.innerWidth <= 768;
-        const offset = -index * 100;
-
-        if (isMobile) {
-            track.style.transform = `translateX(${offset}%)`;
-        } else {
-            track.style.transform = `translateY(${offset}%)`;
-        }
-
-        slides.forEach(s => s.classList.remove('active'));
-        slides[index].classList.add('active');
-
-        dots.forEach(d => d.classList.remove('active'));
-        dots[index].classList.add('active');
-
-        currentIndex = index;
-        setTimeout(() => { isAnimating = false; }, 600);
-    }
-
-    dots.forEach((dot, idx) => {
-        dot.addEventListener('click', function () {
-            goToSlide(idx);
-        });
-    });
-
-    slides.forEach((s, i) => {
-        if (i === 0) s.classList.add('active');
-        else s.classList.remove('active');
-    });
-    track.style.transform = window.innerWidth <= 768 ? 'translateX(0%)' : 'translateY(0%)';
-    dots[0] && dots[0].classList.add('active');
-
-    let startX = 0;
-    let isDragging = false;
-
-    if (window.innerWidth <= 768 && wrapper) {
-        wrapper.addEventListener('touchstart', function(e) {
-            const touch = e.touches[0];
-            startX = touch.clientX;
-            isDragging = true;
-        }, { passive: true });
-
-        wrapper.addEventListener('touchmove', function(e) {
-            if (isDragging) e.preventDefault();
-        }, { passive: false });
-
-        wrapper.addEventListener('touchend', function(e) {
-            if (!isDragging) return;
-            isDragging = false;
-            const endX = e.changedTouches[0].clientX;
-            const diff = endX - startX;
-            if (Math.abs(diff) > 50) {
-                if (diff < 0) {
-                    goToSlide(Math.min(currentIndex + 1, slides.length - 1));
-                } else {
-                    goToSlide(Math.max(currentIndex - 1, 0));
-                }
-            }
-        }, { passive: true });
-    }
-
-    if (window.innerWidth > 768 && wrapper) {
-        wrapper.addEventListener('wheel', function (e) {
-            e.preventDefault();
-            const delta = e.deltaY;
-            if (delta > 0) {
-                goToSlide(Math.min(currentIndex + 1, slides.length - 1));
-            } else if (delta < 0) {
-                goToSlide(Math.max(currentIndex - 1, 0));
-            }
-        }, { passive: false });
-    }
-}
-document.addEventListener('DOMContentLoaded', function () {
-    initInteractiveCarousel();
 });
 
 const caseItems = document.querySelectorAll('.case-item');
