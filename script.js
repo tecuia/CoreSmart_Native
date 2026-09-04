@@ -511,3 +511,43 @@ function initCasesDots() {
 document.addEventListener('DOMContentLoaded', function() {
     initCasesDots();
 });
+
+// === АНИМАЦИЯ БЛОКА "КАК РАБОТАЕМ" ===
+document.addEventListener('DOMContentLoaded', function() {
+  gsap.registerPlugin(ScrollTrigger);
+
+  const workSection = document.querySelector('#work-process');
+  if (!workSection) return;
+
+  const items = workSection.querySelectorAll('.work-process__item');
+  const fillLine = workSection.querySelector('.work-process__vertical-line-fill');
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: workSection,
+      start: 'top top',
+      end: '+=500%', 
+      pin: true,
+      scrub: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const progress = self.progress; 
+        if (fillLine) {
+          fillLine.style.height = (progress * 100) + '%';
+        }
+        const totalItems = items.length;
+        const step = 1 / totalItems;
+        items.forEach((item, index) => {
+          const threshold = (index + 0.2) / totalItems;
+          if (progress >= threshold) {
+            item.classList.add('work-process__item--visible');
+          } else {
+            item.classList.remove('work-process__item--visible');
+          }
+        });
+      }
+    }
+  });
+
+  items.forEach(item => item.classList.remove('work-process__item--visible'));
+});
