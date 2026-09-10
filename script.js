@@ -513,41 +513,154 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // === АНИМАЦИЯ БЛОКА "КАК РАБОТАЕМ" ===
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   gsap.registerPlugin(ScrollTrigger);
 
-  const workSection = document.querySelector('#work-process');
-  if (!workSection) return;
+  const section = document.querySelector('#work-process');
+  if (!section) return;
 
-  const items = workSection.querySelectorAll('.work-process__item');
-  const fillLine = workSection.querySelector('.work-process__vertical-line-fill');
+  const track = section.querySelector('.work-process__track');
+  const items = section.querySelectorAll('.work-process__item');
+  const svg = section.querySelector('.work-process__svg');
+  if (!svg || !track || !items.length) return;
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: workSection,
-      start: 'top top',
-      end: '+=500%', 
-      pin: true,
-      scrub: 1,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        const progress = self.progress; 
-        if (fillLine) {
-          fillLine.style.height = (progress * 100) + '%';
-        }
-        const totalItems = items.length;
-        const step = 1 / totalItems;
-        items.forEach((item, index) => {
-          const threshold = (index + 0.2) / totalItems;
-          if (progress >= threshold) {
-            item.classList.add('work-process__item--visible');
-          } else {
-            item.classList.remove('work-process__item--visible');
-          }
-        });
-      }
-    }
+  const lineBg     = svg.querySelector('.work-process__svg-line-bg');
+  const lineFill   = svg.querySelector('.work-process__svg-line-fill');
+  const nodesGroup = svg.querySelector('.work-process__svg-nodes');
+
+  const NODE_R = 14.67;                                 
+  const NODE_STROKE = 5;
+  const CIRCUMFERENCE = 2 * Math.PI * NODE_R;           
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+
+  const nodeOutlines = [];
+  const nodeFills = [];
+
+  items.forEach(() => {
+    const outline = document.createElementNS(SVG_NS, 'circle');
+    outline.setAttribute('cx', 16);
+    outline.setAttribute('r', NODE_R);
+    outline.setAttribute('fill', '#F2F2F2');
+    outline.setAttribute('stroke', 'rgba(37, 37, 37, 0.15)');
+    outline.setAttribute('stroke-width', NODE_STROKE);
+    nodesGroup.appendChild(outline);
+    nodeOutlines.push(outline);
+
+    const fill = document.createElementNS(SVG_NS, 'circle');
+    fill.setAttribute('cx', 16);
+    fill.setAttribute('r', NODE_R);
+    fill.setAttribute('fill', 'none');
+    fill.setAttribute('stroke', '#DF002C');
+    fill.setAttribute('stroke-width', NODE_STROKE);
+    fill.setAttribute('stroke-dasharray', CIRCUMFERENCE);
+    fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE);
+    nodesGroup.appendChild(fill);
+    nodeFills.push(fill);
   });
 
-  items.forEach(item => item.classList.remove('work-process__item--visible'));
+  let trackHeight = 0;
+  let itemCenters = [];
+  let lineLength = 0;
+
+  function updateLayout() {
+    const trackRect = track.getBoundingClientRect();
+    trackHeight = trackRect.height;
+
+    svg.setAttribute('width', 32);
+    svg.setAttribute('height', trackHeight);
+    svg.setAttribute('viewBox', `0 0 32 ${trackHeight}`);
+
+    itemCenters = [];
+    items.forEach((item, i) => {
+      const r = item.getBoundingClientRect();
+      const cy = r.top + r.height / 2 - trackRect.top;
+      itemCenters.push(cy);
+
+      nodeOutlines[i].setAttribute('cy', cy);
+      nodeFills[i].setAttribute('cy', cy);
+      nodeFills[i].setAttribute('transform', `rotate(-90 16 ${cy})`);
+    });
+
+    const lineTop    = itemCenters[0];
+    const lineBottom = itemCenters[itemCenters.length - 1];
+
+    [lineBg, lineFill].forEach(line => {
+      line.setAttribute('x1', 16);
+      line.setAttribute('y1', lineTop);
+      line.setAttribute('x2', 16);
+      line.setAttribute('y2', lineBottom);
+    });
+
+    lineLength = lineBottom - lineTop;
+    lineFill.setAttribute('stroke-dasharray', lineLength);
+    lineFill.setAttribute('stroke-dashoffset', lineLength);
+  }
+
+  updateLayout();
+
+  items.forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+  });
+
+  const totalItems = items.length;
+  const totalPhases = totalItems * 2 - 1;   // 15
+  const phaseSize = 1 / totalPhases;
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: '+=500%',
+    pin: true,
+    scrub: 1,
+    invalidateOnRefresh: true,
+    onRefresh: () => updateLayout(),
+    onUpdate: (self) => {
+      const p = self.progress;
+
+      const nodeProgress = new Array(totalItems).fill(0);
+
+      if (p >= phaseSize) {
+        nodeProgress[0] = 1;
+      } else {
+        nodeProgress[0] = p / phaseSize;
+      }
+
+      let currentLineY = itemCenters[0];
+
+      for (let i = 1; i < totalItems; i++) {
+        const lineStart = (i * 2 - 1) * phaseSize;
+        const lineEnd   = (i * 2)     * phaseSize;
+        const nodeEnd   = (i * 2 + 1) * phaseSize;
+
+        if (p >= nodeEnd) {
+          nodeProgress[i] = 1;
+          currentLineY = itemCenters[i];
+        } else if (p >= lineEnd) {
+          nodeProgress[i] = (p - lineEnd) / (nodeEnd - lineEnd);
+          currentLineY = itemCenters[i];
+          break;
+        } else if (p >= lineStart) {
+          const local = (p - lineStart) / (lineEnd - lineStart);
+          currentLineY = itemCenters[i - 1] + (itemCenters[i] - itemCenters[i - 1]) * local;
+          break;
+        } else {
+          break;
+        }
+      }
+
+      const lineFilled = currentLineY - itemCenters[0];
+      lineFill.setAttribute('stroke-dashoffset', lineLength - lineFilled);
+
+      nodeFills.forEach((fill, i) => {
+        fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE * (1 - nodeProgress[i]));
+      });
+
+      items.forEach((item, i) => {
+        const prog = nodeProgress[i];
+        item.style.opacity = prog;
+        item.style.transform = `translateY(${(1 - prog) * 20}px)`;
+      });
+    }
+  });
 });
