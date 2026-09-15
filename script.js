@@ -34,6 +34,24 @@ const debouncedCreateDots = debounce(createDots, 100);
 window.addEventListener('resize', debouncedCreateDots);
 
 document.addEventListener('DOMContentLoaded', function () {
+  const lenis = new Lenis({
+    duration: 3.8,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 0.7,
+    touchMultiplier: 1.5
+  });
+
+  lenis.on('scroll', ScrollTrigger.update);
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', function () {
@@ -99,19 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 toggleActions: 'play none none none'
             }
         });
-    });
-    // Анимация пунктов "Как мы работаем" с появлением по очереди
-    gsap.from('.work-item', {
-        opacity: 0,
-        y: 40,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power2.out',
-        scrollTrigger: {
-            trigger: '.work-process',
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-        }
     });
     gsap.utils.toArray('.case-item').forEach((item, i) => {
         gsap.from(item, {
@@ -428,18 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
         faqList.appendChild(faqItem);
 
         header.addEventListener('click', function () {
-            const isOpen = faqItem.classList.contains('faq-item--open');
-            if (isOpen) {
-                faqItem.classList.remove('faq-item--open');
-                body.style.maxHeight = '0';
-            } else {
-                faqItem.classList.add('faq-item--open');
-                body.style.maxHeight = '0';
-                requestAnimationFrame(() => {
-                    const height = body.scrollHeight;
-                    body.style.maxHeight = height + 'px';
-                });
-            }
+            faqItem.classList.toggle('faq-item--open');
         });
     });
 });
@@ -512,155 +506,272 @@ document.addEventListener('DOMContentLoaded', function() {
     initCasesDots();
 });
 
-// === АНИМАЦИЯ БЛОКА "КАК РАБОТАЕМ" ===
 document.addEventListener('DOMContentLoaded', function () {
-  gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger);
 
-  const section = document.querySelector('#work-process');
-  if (!section) return;
+    const section = document.querySelector('#work-process');
+    if (!section) return;
 
-  const track = section.querySelector('.work-process__track');
-  const items = section.querySelectorAll('.work-process__item');
-  const svg = section.querySelector('.work-process__svg');
-  if (!svg || !track || !items.length) return;
+    const track = section.querySelector('.work-process__track');
+    const items = section.querySelectorAll('.work-process__item');
+    const svg = section.querySelector('.work-process__svg');
+    if (!svg || !track || !items.length) return;
 
-  const lineBg     = svg.querySelector('.work-process__svg-line-bg');
-  const lineFill   = svg.querySelector('.work-process__svg-line-fill');
-  const nodesGroup = svg.querySelector('.work-process__svg-nodes');
+    const lineBg     = svg.querySelector('.work-process__svg-line-bg');
+    const lineFill   = svg.querySelector('.work-process__svg-line-fill');
+    const nodesGroup = svg.querySelector('.work-process__svg-nodes');
 
-  const NODE_R = 14.67;                                 
-  const NODE_STROKE = 5;
-  const CIRCUMFERENCE = 2 * Math.PI * NODE_R;           
-  const SVG_NS = 'http://www.w3.org/2000/svg';
+    const NODE_R = 14.67;
+    const NODE_STROKE = 4;
+    const CIRCUMFERENCE = 2 * Math.PI * NODE_R;
+    const SVG_NS = 'http://www.w3.org/2000/svg';
 
-  const nodeOutlines = [];
-  const nodeFills = [];
-
-  items.forEach(() => {
-    const outline = document.createElementNS(SVG_NS, 'circle');
-    outline.setAttribute('cx', 16);
-    outline.setAttribute('r', NODE_R);
-    outline.setAttribute('fill', '#F2F2F2');
-    outline.setAttribute('stroke', 'rgba(37, 37, 37, 0.15)');
-    outline.setAttribute('stroke-width', NODE_STROKE);
-    nodesGroup.appendChild(outline);
-    nodeOutlines.push(outline);
-
-    const fill = document.createElementNS(SVG_NS, 'circle');
-    fill.setAttribute('cx', 16);
-    fill.setAttribute('r', NODE_R);
-    fill.setAttribute('fill', 'none');
-    fill.setAttribute('stroke', '#DF002C');
-    fill.setAttribute('stroke-width', NODE_STROKE);
-    fill.setAttribute('stroke-dasharray', CIRCUMFERENCE);
-    fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE);
-    nodesGroup.appendChild(fill);
-    nodeFills.push(fill);
-  });
-
-  let trackHeight = 0;
-  let itemCenters = [];
-  let lineLength = 0;
-
-  function updateLayout() {
-    const trackRect = track.getBoundingClientRect();
-    trackHeight = trackRect.height;
-
-    svg.setAttribute('width', 32);
-    svg.setAttribute('height', trackHeight);
-    svg.setAttribute('viewBox', `0 0 32 ${trackHeight}`);
-
-    itemCenters = [];
-    items.forEach((item, i) => {
-      const r = item.getBoundingClientRect();
-      const cy = r.top + r.height / 2 - trackRect.top;
-      itemCenters.push(cy);
-
-      nodeOutlines[i].setAttribute('cy', cy);
-      nodeFills[i].setAttribute('cy', cy);
-      nodeFills[i].setAttribute('transform', `rotate(-90 16 ${cy})`);
-    });
-
-    const lineTop    = itemCenters[0];
-    const lineBottom = itemCenters[itemCenters.length - 1];
-
-    [lineBg, lineFill].forEach(line => {
-      line.setAttribute('x1', 16);
-      line.setAttribute('y1', lineTop);
-      line.setAttribute('x2', 16);
-      line.setAttribute('y2', lineBottom);
-    });
-
-    lineLength = lineBottom - lineTop;
-    lineFill.setAttribute('stroke-dasharray', lineLength);
-    lineFill.setAttribute('stroke-dashoffset', lineLength);
-  }
-
-  updateLayout();
-
-  items.forEach(item => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(20px)';
-  });
-
-  const totalItems = items.length;
-  const totalPhases = totalItems * 2 - 1;   // 15
-  const phaseSize = 1 / totalPhases;
-
-  ScrollTrigger.create({
-    trigger: section,
-    start: 'top top',
-    end: '+=500%',
-    pin: true,
-    scrub: 1,
-    invalidateOnRefresh: true,
-    onRefresh: () => updateLayout(),
-    onUpdate: (self) => {
-      const p = self.progress;
-
-      const nodeProgress = new Array(totalItems).fill(0);
-
-      if (p >= phaseSize) {
-        nodeProgress[0] = 1;
-      } else {
-        nodeProgress[0] = p / phaseSize;
-      }
-
-      let currentLineY = itemCenters[0];
-
-      for (let i = 1; i < totalItems; i++) {
-        const lineStart = (i * 2 - 1) * phaseSize;
-        const lineEnd   = (i * 2)     * phaseSize;
-        const nodeEnd   = (i * 2 + 1) * phaseSize;
-
-        if (p >= nodeEnd) {
-          nodeProgress[i] = 1;
-          currentLineY = itemCenters[i];
-        } else if (p >= lineEnd) {
-          nodeProgress[i] = (p - lineEnd) / (nodeEnd - lineEnd);
-          currentLineY = itemCenters[i];
-          break;
-        } else if (p >= lineStart) {
-          const local = (p - lineStart) / (lineEnd - lineStart);
-          currentLineY = itemCenters[i - 1] + (itemCenters[i] - itemCenters[i - 1]) * local;
-          break;
-        } else {
-          break;
-        }
-      }
-
-      const lineFilled = currentLineY - itemCenters[0];
-      lineFill.setAttribute('stroke-dashoffset', lineLength - lineFilled);
-
-      nodeFills.forEach((fill, i) => {
-        fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE * (1 - nodeProgress[i]));
-      });
-
-      items.forEach((item, i) => {
-        const prog = nodeProgress[i];
-        item.style.opacity = prog;
-        item.style.transform = `translateY(${(1 - prog) * 20}px)`;
-      });
+    function easeInOutCubic(t) {
+        return t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
-  });
+
+    const nodeOutlines = [];
+    const nodeFills = [];
+
+    items.forEach(() => {
+        const outline = document.createElementNS(SVG_NS, 'circle');
+        outline.setAttribute('cx', 16);
+        outline.setAttribute('r', NODE_R);
+        outline.setAttribute('fill', '#F2F2F2');
+        outline.setAttribute('stroke', '#D9D9D9');
+        outline.setAttribute('stroke-width', NODE_STROKE);
+        nodesGroup.appendChild(outline);
+        nodeOutlines.push(outline);
+
+        const fill = document.createElementNS(SVG_NS, 'circle');
+        fill.setAttribute('cx', 16);
+        fill.setAttribute('r', NODE_R);
+        fill.setAttribute('fill', 'none');
+        fill.setAttribute('stroke', '#DF002C');
+        fill.setAttribute('stroke-width', NODE_STROKE);
+        fill.setAttribute('stroke-dasharray', CIRCUMFERENCE);
+        fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE);
+        nodesGroup.appendChild(fill);
+        nodeFills.push(fill);
+    });
+
+    let trackHeight = 0;
+    let itemCenters = [];
+    let lineLength = 0;
+
+    function updateLayout() {
+        const trackRect = track.getBoundingClientRect();
+        trackHeight = trackRect.height;
+
+        svg.setAttribute('width', 32);
+        svg.setAttribute('height', trackHeight);
+        svg.setAttribute('viewBox', `0 0 32 ${trackHeight}`);
+
+        itemCenters = [];
+        items.forEach((item, i) => {
+            const icon = item.querySelector('.work-process__item-icon');
+            const r = icon.getBoundingClientRect();
+            const cy = r.top + r.height / 2 - trackRect.top;
+            itemCenters.push(cy);
+
+            nodeOutlines[i].setAttribute('cy', cy);
+            nodeFills[i].setAttribute('cy', cy);
+            nodeFills[i].setAttribute('transform', `rotate(-90 16 ${cy})`);
+        });
+
+        const lineTop    = itemCenters[0];
+        const lineBottom = itemCenters[itemCenters.length - 1];
+
+        [lineBg, lineFill].forEach(line => {
+            line.setAttribute('x1', 16);
+            line.setAttribute('y1', lineTop);
+            line.setAttribute('x2', 16);
+            line.setAttribute('y2', lineBottom);
+        });
+
+        lineLength = lineBottom - lineTop;
+        lineFill.setAttribute('stroke-dasharray', lineLength);
+        lineFill.setAttribute('stroke-dashoffset', lineLength);
+    }
+
+    updateLayout();
+
+    items.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+    });
+
+    const totalItems = items.length;
+    const stepSize = 1 / totalItems;
+
+    ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: '+=150%',
+        pin: true,
+        scrub: 2,
+        invalidateOnRefresh: true,
+        onRefresh: () => updateLayout(),
+        onUpdate: (self) => {
+            const p = self.progress;
+
+            const nodeProgress = new Array(totalItems).fill(0);
+            let currentLineY = itemCenters[0];
+
+            for (let i = 0; i < totalItems; i++) {
+                const stepStart = i * stepSize;
+                const stepEnd   = (i + 1) * stepSize;
+
+                if (p >= stepEnd) {
+                    nodeProgress[i] = 1;
+                    if (i < totalItems - 1) {
+                        currentLineY = itemCenters[i + 1];
+                    } else {
+                        currentLineY = itemCenters[i];
+                    }
+                } else if (p >= stepStart) {
+                    const local = (p - stepStart) / stepSize;
+
+                    if (local <= 0.5) {
+                        nodeProgress[i] = Math.min(local * 2, 1);
+                        currentLineY = itemCenters[i];
+                    } else {
+                        nodeProgress[i] = 1;
+                        if (i < totalItems - 1) {
+                            const lineLocal = (local - 0.5) * 2;
+                            currentLineY = itemCenters[i]
+                                + (itemCenters[i + 1] - itemCenters[i]) * lineLocal;
+                        } else {
+                            currentLineY = itemCenters[i];
+                        }
+                    }
+                    break;
+                } else {
+                    break;
+                }
+            }
+
+            const lineFilled = currentLineY - itemCenters[0];
+            lineFill.setAttribute('stroke-dashoffset', lineLength - lineFilled);
+
+            nodeFills.forEach((fill, i) => {
+                const eased = easeInOutCubic(nodeProgress[i]);
+                fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE * (1 - eased));
+            });
+
+            items.forEach((item, i) => {
+                const eased = easeInOutCubic(nodeProgress[i]);
+                item.style.opacity = eased;
+                item.style.transform = `translateY(${(1 - eased) * 20}px)`;
+            });
+        }
+    });
+});
+
+/* ===== Переключение табов в секции «Решения» ===== */
+document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.solutions__tab');
+    const contents = {
+        native: document.getElementById('tab-native'),
+        interactive: document.getElementById('tab-interactive')
+    };
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            tabs.forEach(t => {
+                t.classList.remove('solutions__tab--active');
+                t.classList.add('solutions__tab--inactive');
+            });
+            this.classList.add('solutions__tab--active');
+            this.classList.remove('solutions__tab--inactive');
+            Object.values(contents).forEach(content => {
+                content.style.display = 'none';
+            });
+            const tabId = this.dataset.tab;
+            if (contents[tabId]) {
+                contents[tabId].style.display = 'flex';
+                if (tabId === 'interactive') {
+                    setTimeout(initInteractiveCarousel, 50);
+                }
+            }
+        });
+    });
+});
+
+/* ===== Карусель «Интерактивные механики» ===== */
+function initInteractiveCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const slides = document.querySelectorAll('.carousel-slide');
+    const wrapper = document.querySelector('.solutions__carousel-wrapper');
+    let currentIndex = 0;
+    let isAnimating = false;
+
+    if (!track || slides.length === 0) return;
+
+    function goToSlide(index) {
+        if (isAnimating || index === currentIndex) return;
+        if (index < 0 || index >= slides.length) return;
+        isAnimating = true;
+
+        const isMobile = window.innerWidth <= 768;
+        const offset = -index * 100;
+        track.style.transform = isMobile ? `translateX(${offset}%)` : `translateY(${offset}%)`;
+
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+
+        dots.forEach(d => d.classList.remove('active'));
+        dots[index].classList.add('active');
+
+        currentIndex = index;
+        setTimeout(() => { isAnimating = false; }, 600);
+    }
+
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', function () { goToSlide(idx); });
+    });
+
+    slides.forEach((s, i) => {
+        if (i === 0) s.classList.add('active');
+        else s.classList.remove('active');
+    });
+    track.style.transform = window.innerWidth <= 768 ? 'translateX(0%)' : 'translateY(0%)';
+    if (dots[0]) dots[0].classList.add('active');
+
+    // Свайп на мобильных
+    let startX = 0;
+    let isDragging = false;
+
+    if (window.innerWidth <= 768 && wrapper) {
+        wrapper.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = e.changedTouches[0].clientX - startX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) goToSlide(Math.min(currentIndex + 1, slides.length - 1));
+                else goToSlide(Math.max(currentIndex - 1, 0));
+            }
+        }, { passive: true });
+    }
+
+    // Колесо мыши на десктопе
+    if (window.innerWidth > 768 && wrapper) {
+        wrapper.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            const delta = e.deltaY;
+            if (delta > 0) goToSlide(Math.min(currentIndex + 1, slides.length - 1));
+            else if (delta < 0) goToSlide(Math.max(currentIndex - 1, 0));
+        }, { passive: false });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initInteractiveCarousel();
 });
