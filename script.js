@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fill.setAttribute('cx', 16);
         fill.setAttribute('r', NODE_R);
         fill.setAttribute('fill', 'none');
-        fill.setAttribute('stroke', '#DF002C');
+        fill.setAttribute('stroke', '#CA1638');
         fill.setAttribute('stroke-width', NODE_STROKE);
         fill.setAttribute('stroke-dasharray', CIRCUMFERENCE);
         fill.setAttribute('stroke-dashoffset', CIRCUMFERENCE);
@@ -715,10 +715,6 @@ function initInteractiveCarousel() {
         if (index < 0 || index >= slides.length) return;
         isAnimating = true;
 
-        const isMobile = window.innerWidth <= 768;
-        const offset = -index * 100;
-        track.style.transform = isMobile ? `translateX(${offset}%)` : `translateY(${offset}%)`;
-
         slides.forEach(s => s.classList.remove('active'));
         slides[index].classList.add('active');
 
@@ -726,7 +722,7 @@ function initInteractiveCarousel() {
         dots[index].classList.add('active');
 
         currentIndex = index;
-        setTimeout(() => { isAnimating = false; }, 600);
+        setTimeout(() => { isAnimating = false; }, 450);
     }
 
     dots.forEach((dot, idx) => {

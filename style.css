@@ -184,6 +184,8 @@ body {
 /* ===== ПРОМО-БАННЕРЫ ===== */
 .promo {
   padding-bottom: clamp(30px, 6vh, 80px);
+  padding-top: 0;
+  margin-top: -20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -314,7 +316,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638;
 }
 
 .about-native__title {
@@ -451,7 +453,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638;
 }
 
 .features__title {
@@ -579,6 +581,7 @@ body {
 .work-process__svg-line-bg,
 .work-process__svg-line-fill {
   stroke-width: 2;
+  stroke: #CA1638;
   fill: none;
 }
 
@@ -746,7 +749,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638;
 }
 
 .solutions__title {
@@ -814,11 +817,11 @@ body {
   flex-wrap: wrap;
   gap: clamp(12px, 1.5vw, 20px);
   width: 100%;
-  align-items: stretch;
+  align-items: center;
 }
 
 .solutions__content > * {
-  flex: 1 1 calc(50% - 10px);
+  flex: 0 0 calc(50% - 10px);   
   max-width: calc(50% - 10px);
   min-width: 0;
 }
@@ -827,11 +830,12 @@ body {
 .native-single-card {
   position: relative;
   width: 100%;
-  min-height: clamp(400px, 60vh, 640px);
-  max-height: clamp(400px, 60vh, 640px);
+  min-height: 600px;      
+  max-height: 600px;      
   background: #FFFFFF;
   border-radius: 20px;
   overflow: hidden;
+  align-self: center;   
 }
 
 .native-single-card__badge {
@@ -885,8 +889,7 @@ body {
   flex-direction: column;
   gap: clamp(12px, 1.5vw, 20px);
   justify-content: space-between;
-  height: 100%;
-  max-height: clamp(400px, 60vh, 640px);
+  height: 640px;   
 }
 
 .solution-card {
@@ -924,8 +927,7 @@ body {
   flex: 1 1 calc(50% - 10px);
   max-width: calc(50% - 10px);
   min-width: 0;
-  min-height: clamp(400px, 60vh, 640px);
-  max-height: clamp(400px, 60vh, 640px);
+  height: clamp(400px, 60vh, 640px);   
   border-radius: 20px;
   overflow: hidden;
   background: #ffffff;
@@ -935,27 +937,24 @@ body {
 }
 
 .solutions__carousel {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: 100%;
   width: 100%;
-  position: relative;
   overflow: hidden;
 }
 
 .carousel-track {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
-  min-height: 0;
+  position: relative;
+  height: 100%;
+  width: 100%;
 }
 
 .carousel-slide {
-  flex: 0 0 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  min-height: 0;
   padding: clamp(20px, 2.5vw, 40px);
   display: flex;
   flex-direction: column;
@@ -964,10 +963,12 @@ body {
   box-sizing: border-box;
   opacity: 0;
   transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
 .carousel-slide.active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .slide-badge {
@@ -1084,7 +1085,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638;
 }
 
 .cases__title {
@@ -1257,7 +1258,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638;
 }
 
 .calculator__title {
@@ -1609,7 +1610,7 @@ body {
   flex-shrink: 0;
   width: 2px;
   height: clamp(26px, 7vh, 88px);
-  background: #DF002C;
+  background: #CA1638; 
 }
 
 .faq__title {
@@ -1759,6 +1760,7 @@ body {
 
 .footer__slogan .highlight-black {
   color: #252525;
+  font-weight: 400;
 }
 
 .footer__right {
@@ -2020,26 +2022,31 @@ button,
 
   /* ===== ABOUT NATIVE ===== */
   .about-native {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
   .about-native__container {
     flex-direction: row;
     align-items: flex-start;
-    gap: 8px;
+    gap: 10px;
+    max-width: 100%;
+  }
+  .about-native__line {
+    height: 20px;
+    width: 2px;
+    margin-top: 4px;
+  }
+  .about-native__title {
+    font-size: 22px;
+    line-height: 110%;
+    margin-bottom: 8px;
+  }
+  .about-native__desc {
+    font-size: 14px;
+    line-height: 130%;
   }
   .about-native__desc br {
     display: none;
-  }
-  .about-native__line {
-    height: 26px;
-  }
-  .about-native__title {
-    font-size: 24px;
-    margin-bottom: 12px;
-  }
-  .about-native__desc {
-    font-size: 16px;
   }
 
   /* ===== ПРЕИМУЩЕСТВА ===== */
@@ -2089,40 +2096,54 @@ button,
 
   /* ===== ТЕХНОЛОГИЯ ===== */
   .features {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
   .features__header {
     gap: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    max-width: 100%;
   }
   .features__line {
-    height: 52px;
+    height: 30px;
+    width: 2px;
+    margin-top: 4px;
   }
   .features__title {
-    font-size: 24px;
+    font-size: 22px;
+    line-height: 110%;
   }
   .features__container {
     flex-direction: column;
     gap: 16px;
+    max-width: 100%;
   }
   .features__content {
-    gap: 20px;
+    gap: 16px;
     max-width: 100%;
     flex: 1 1 auto;
   }
   .feature-title {
     font-size: 18px;
+    margin-bottom: 6px;
   }
   .feature-desc {
     font-size: 14px;
+    line-height: 130%;
   }
   .features__image {
     width: 100%;
     max-width: 100%;
     flex: 1 1 auto;
+    aspect-ratio: auto;
+    max-height: 240px;
+    border-radius: 12px;
   }
   .features__image img {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    object-fit: cover;
     border-radius: 12px;
   }
 
@@ -2267,7 +2288,6 @@ button,
     min-width: 0;
   }
 
-  /* Нативные статьи */
   .native-single-card {
     min-height: 344px;
     max-height: 344px;
@@ -2296,7 +2316,6 @@ button,
     top: 40%;
   }
 
-  /* Чёрные карточки */
   .solutions__cards {
     gap: 10px;
     max-height: none;
@@ -2318,7 +2337,6 @@ button,
     font-size: 13px;
   }
 
-  /* Карусель */
   .solutions__carousel-wrapper {
     flex: 1 1 100%;
     max-width: 100%;
@@ -2365,8 +2383,8 @@ button,
 
   /* ===== КЕЙСЫ ===== */
   .cases {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 16px;
+    padding-bottom: 16px;
   }
   .cases__header {
     gap: 8px;
@@ -2374,7 +2392,9 @@ button,
     padding-right: 20px;
   }
   .cases__line {
-    height: 52px;
+    height: 30px;
+    width: 2px;
+    margin-top: 4px;
   }
   .cases__title {
     font-size: 24px;
@@ -2385,28 +2405,38 @@ button,
   .cases__carousel-wrapper {
     padding-right: 20px;
     margin-right: calc(-50vw + 50% - 20px);
+    padding-bottom: 8px;
+  }
+  .cases__carousel {
+    gap: 12px;
+    padding-right: 20px;
   }
   .case-item {
-    flex: 0 0 200px;
-    width: 200px;
-    height: 500px;
-    border-radius: 16px;
+    flex: 0 0 160px;
+    width: 160px;
+    height: 320px;
+    border-radius: 14px;
+    padding: 14px 8px 0;
   }
   .case-item.active {
-    flex: 0 0 260px;
-    width: 260px;
+    flex: 0 0 220px;
+    width: 220px;
   }
   .case-item__name {
-    font-size: 20px;
+    font-size: 18px;
+    line-height: 110%;
   }
   .case-item__img {
-    width: 100%;
-    height: auto;
-    max-height: 80%;
+    width: 200px;
+    height: 200px;
+    max-width: 100%;
+    bottom: 0;
   }
   .cases__dots {
     display: flex !important;
     padding-right: 20px;
+    gap: 10px;
+    margin-top: 12px;
   }
   .cases__dot {
     width: 4px;
@@ -2631,7 +2661,6 @@ button,
     max-width: 100%;
   }
 
-  /* Скрыть оверлей с точками */
   #dots-overlay {
     display: none;
   }
@@ -2649,25 +2678,49 @@ button,
     background-position: center 10px, center 16px, center 22px;
   }
 
+  /* Что такое Native */
+  .about-native__title {
+    font-size: 20px;
+  }
+  .about-native__desc {
+    font-size: 13px;
+  }
+
+  /* Технология */
+  .features__title {
+    font-size: 20px;
+  }
+  .feature-title {
+    font-size: 16px;
+  }
+  .feature-desc {
+    font-size: 13px;
+  }
+  .features__image,
+  .features__image img {
+    max-height: 200px;
+  }
+
   /* Кейсы */
-  .case-item,
-  .case-item:hover {
-    flex: 0 0 150px;
-    width: 150px;
-    height: 400px;
+  .case-item {
+    flex: 0 0 130px;
+    width: 130px;
+    height: 260px;
+    padding: 12px 6px 0;
+    border-radius: 12px;
   }
   .case-item.active {
-    flex: 0 0 200px;
-    width: 200px;
-  }
-  .case-item__img {
-    width: 140%;
-    height: auto;
-    max-height: 75%;
-    bottom: 0%;
+    flex: 0 0 180px;
+    width: 180px;
   }
   .case-item__name {
-    font-size: 16px;
+    font-size: 15px;
+  }
+  .case-item__img {
+    width: 140px;
+    height: 140px;
+    max-height: none;
+    bottom: 0;
   }
 
   /* Решения */
@@ -2701,6 +2754,9 @@ button,
   }
 }
 
+/* ============================================================
+   БОЛЬШИЕ ЭКРАНЫ (от 1921px)
+   ============================================================ */
 @media (min-width: 1921px) {
   .promo__banners-row .banner {
     max-width: none;
