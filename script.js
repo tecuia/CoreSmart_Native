@@ -35,10 +35,10 @@ window.addEventListener('resize', debouncedCreateDots);
 
 document.addEventListener('DOMContentLoaded', function () {
   const lenis = new Lenis({
-    duration: 3.8,
+    duration: 1.0,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    wheelMultiplier: 0.7,
+    wheelMultiplier: 1.2,
     touchMultiplier: 1.5
   });
 
@@ -609,9 +609,9 @@ document.addEventListener('DOMContentLoaded', function () {
     ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: '+=150%',
+        end: '+=400%',
         pin: true,
-        scrub: 2,
+        scrub: 0.5,
         invalidateOnRefresh: true,
         onRefresh: () => updateLayout(),
         onUpdate: (self) => {
@@ -634,13 +634,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (p >= stepStart) {
                     const local = (p - stepStart) / stepSize;
 
-                    if (local <= 0.5) {
-                        nodeProgress[i] = Math.min(local * 2, 1);
+                    /* Первые 15% шага — кружок и текст (быстро) */
+                    if (local <= 0.15) {
+                        nodeProgress[i] = local / 0.15;
                         currentLineY = itemCenters[i];
                     } else {
+                        /* Остальные 85% — линия тянется до следующего кружка */
                         nodeProgress[i] = 1;
                         if (i < totalItems - 1) {
-                            const lineLocal = (local - 0.5) * 2;
+                            const lineLocal = (local - 0.15) / 0.85;
                             currentLineY = itemCenters[i]
                                 + (itemCenters[i + 1] - itemCenters[i]) * lineLocal;
                         } else {
@@ -733,7 +735,6 @@ function initInteractiveCarousel() {
         if (i === 0) s.classList.add('active');
         else s.classList.remove('active');
     });
-    track.style.transform = window.innerWidth <= 768 ? 'translateX(0%)' : 'translateY(0%)';
     if (dots[0]) dots[0].classList.add('active');
 
     // Свайп на мобильных
@@ -757,13 +758,19 @@ function initInteractiveCarousel() {
         }, { passive: true });
     }
 
-    // Колесо мыши на десктопе
+    // Колесо мыши на десктопе — с throttle
+    let wheelLocked = false;
     if (window.innerWidth > 768 && wrapper) {
         wrapper.addEventListener('wheel', function (e) {
             e.preventDefault();
+            if (wheelLocked) return;
+            wheelLocked = true;
+
             const delta = e.deltaY;
             if (delta > 0) goToSlide(Math.min(currentIndex + 1, slides.length - 1));
             else if (delta < 0) goToSlide(Math.max(currentIndex - 1, 0));
+
+            setTimeout(() => { wheelLocked = false; }, 500);
         }, { passive: false });
     }
 }
