@@ -511,6 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const section = document.querySelector('#work-process');
     if (!section) return;
+    if (window.innerWidth <= 768) return;
 
     const track = section.querySelector('.work-process__track');
     const items = section.querySelectorAll('.work-process__item');
@@ -634,12 +635,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else if (p >= stepStart) {
                     const local = (p - stepStart) / stepSize;
 
-                    /* Первые 15% шага — кружок и текст (быстро) */
                     if (local <= 0.15) {
                         nodeProgress[i] = local / 0.15;
                         currentLineY = itemCenters[i];
                     } else {
-                        /* Остальные 85% — линия тянется до следующего кружка */
                         nodeProgress[i] = 1;
                         if (i < totalItems - 1) {
                             const lineLocal = (local - 0.15) / 0.85;
@@ -737,7 +736,6 @@ function initInteractiveCarousel() {
     });
     if (dots[0]) dots[0].classList.add('active');
 
-    // Свайп на мобильных
     let startX = 0;
     let isDragging = false;
 
