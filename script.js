@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const section = document.querySelector('#work-process');
     if (!section) return;
-    if (window.innerWidth <= 768) return;
+    if (window.innerWidth <= 770) return;
 
     const track = section.querySelector('.work-process__track');
     const items = section.querySelectorAll('.work-process__item');
